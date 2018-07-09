@@ -2,11 +2,6 @@ from random import randrange, randint
 
 
 def new_gladiator(health, rage, damage_low, damage_high):
-    #gladiator = {}
-    #gladiator[health] = health
-    #gladiator[rage] = rage
-    #gladiator[damage_low] = damage_low
-    #gladiator[damage_high] = damage_high
     return dict(
         health=health,
         rage=rage,
@@ -24,3 +19,15 @@ def attack(attacker, defender):
         defender['health'] = 0
     else:
         defender['health'] = defender['health'] - damage_dealt
+        defender['rage'] += 15
+
+
+def heal(gladiator):
+    if (gladiator['health'] + 5) > 100 and gladiator['health'] < 100:
+        gladiator['rage'] -= 10
+        gladiator['health'] = 100
+    elif (gladiator['health'] + 5) < 100:
+        gladiator['rage'] -= 10
+        gladiator['health'] += 5
+    else:
+        pass
