@@ -31,3 +31,7 @@ def heal(gladiator):
         gladiator['health'] += 5
     else:
         pass
+
+
+def is_dead(gladiator):
+    return not gladiator['health']
