@@ -1,32 +1,28 @@
 import core
 
 
-def gladiator1():
-    gladiator1 = core.new_gladiator(100, 0, 5, 15)
-    return gladiator1
-
-
-def gladiator2():
-    gladiator2 = core.new_gladiator(100, 0, 5, 15)
-    return gladiator2
+def gladiator(gladiator_name):
+    gladiator = core.new_gladiator(gladiator_name, 100, 0, 5, 15)
+    return gladiator
 
 
 def show_gladiators(gladiator_1, gladiator_2):
     print('''
-Gladiator 1: {} HP ||| {} Rage
-Gladiator 2: {} HP ||| {} Rage'''
-          .format(gladiator_1['health'], gladiator_1['rage'],
+{}: {} HP ||| {} Rage
+{}: {} HP ||| {} Rage'''
+          .format(gladiator_1['gladiator_name'], gladiator_1['health'],
+                  gladiator_1['rage'], gladiator_2['gladiator_name'],
                   gladiator_2['health'], gladiator_2['rage']))
 
 
-def gladiator_makes_move(gladiator, number):
+def gladiator_makes_move(gladiator_name):
     while True:
-        move = input('''Gladiator {}... What would you like to do?
+        move = input('''{}... What would you like to do?
 - attack
 - pass
 - quit
 - heal
->>> '''.format(number))
+>>> '''.format(gladiator_name))
         if 'attack' == move:
             return move
         elif 'pass' == move:
@@ -40,54 +36,61 @@ def gladiator_makes_move(gladiator, number):
 
 
 def gladiator_fight():
-    gladiator_1 = gladiator1()
-    gladiator_2 = gladiator2()
+    gladiator_1 = gladiator('Gladiator 1')
+    gladiator_2 = gladiator('Gladiator 2')
+
+    attacker, defender = gladiator_1, gladiator_2
+    # while attacker['health'] and defender['health']:
     while True:
-        show_gladiators(gladiator_1, gladiator_2)
-        gladiator1_move = gladiator_makes_move(gladiator_1, 1)
+        show_gladiators(attacker, defender)
+        gladiator1_move = gladiator_makes_move(attacker['gladiator_name'])
         if gladiator1_move == 'attack':
-            core.attack(gladiator_1, gladiator_2)
+            core.attack(attacker, defender)
         elif gladiator1_move == 'heal':
-            if gladiator_1['rage'] < 10:
+            if attacker['rage'] < 10:
                 print("You try to heal, but you just aren't angry enough")
                 continue
-            if gladiator_1['health'] == 100:
+            if attacker['health'] == 100:
                 print(
                     "You spend some time searching for wounds to self-treat, but no serious one's are found (Turn used up)"
                 )
             else:
-                core.heal(gladiator_1)
+                core.heal(attacker)
         elif gladiator1_move == 'quit':
-            print('Gladiator 1: Survived!\nGladiator 2: Survived!')
+            print('{}: Survived!\n{}: Survived!'.format(
+                defender['gladiator_name'], attacker['gladiator_name']))
             break
         elif gladiator1_move == 'pass':
             pass
-        if core.is_dead(gladiator_2):
-            print('Gladiator 2 has died. Funeral procession tommorrow')
+        if core.is_dead(defender):
+            print(
+                '{} has died. Funeral procession tommorrow... {} Wins!'.format(
+                    defender['gladiator_name'], attacker['gladiator_name']))
             break
-        show_gladiators(gladiator_1, gladiator_2)
-        gladiator2_move = gladiator_makes_move(gladiator_2, 2)
-        if gladiator2_move == 'attack':
-            core.attack(gladiator_2, gladiator_1)
-        elif gladiator2_move == 'heal':
-            if gladiator_2['rage'] < 10:
-                print("You try to heal, but you just aren't angry enough")
-                continue
-            elif gladiator_2['health'] == 100:
-                print(
-                    "You spend some time searching for wounds to self-treat, but no serious one's are found (Turn used up)"
-                )
-                continue
-            else:
-                core.heal(gladiator_2)
-        elif gladiator1_move == 'quit':
-            print('Gladiator 1: Survived!\nGladiator 2: Survived!')
-            break
-        elif gladiator1_move == 'pass':
-            pass
-        if core.is_dead(gladiator_1):
-            print('Gladiator 2 has died. Funeral procession tommorrow')
-            break
+        attacker, defender = defender, attacker  #uses multivariable assignment to switch between attacker and defender at the end of every while loop
+
+        # gladiator2_move = gladiator_makes_move(gladiator_2, 2)
+        # if gladiator2_move == 'attack':
+        #     core.attack(gladiator_2, gladiator_1)
+        # elif gladiator2_move == 'heal':
+        #     if gladiator_2['rage'] < 10:
+        #         print("You try to heal, but you just aren't angry enough")
+        #         continue
+        #     elif gladiator_2['health'] == 100:
+        #         print(
+        #             "You spend some time searching for wounds to self-treat, but no serious one's are found (Turn used up)"
+        #         )
+        #         continue
+        #     else:
+        #         core.heal(gladiator_2)
+        # elif gladiator1_move == 'quit':
+        #     print('Gladiator 1: Survived!\nGladiator 2: Survived!')
+        #     break
+        # elif gladiator1_move == 'pass':
+        #     pass
+        # if core.is_dead(gladiator_1):
+        #     print('Gladiator 2 has died. Funeral procession tommorrow')
+        #     break
 
 
 def main():
