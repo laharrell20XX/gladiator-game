@@ -3,7 +3,7 @@ import core
 
 def gladiator1():
     gladiator1 = core.new_gladiator(100, 0, 5, 15)
-    return core.gladiator1
+    return gladiator1
 
 
 def gladiator2():
@@ -11,12 +11,12 @@ def gladiator2():
     return gladiator2
 
 
-def show_gladiators(gladiator1, gladiator2):
+def show_gladiators(gladiator_1, gladiator_2):
     print('''
 Gladiator 1: {} HP ||| {} Rage
 Gladiator 2: {} HP ||| {} Rage'''
-          .format(gladiator1['health'], gladiator1['rage'],
-                  gladiator2['health'], gladiator2['rage']))
+          .format(gladiator_1['health'], gladiator_1['rage'],
+                  gladiator_2['health'], gladiator_2['rage']))
 
 
 def gladiator_makes_move(gladiator, number):
@@ -40,52 +40,52 @@ def gladiator_makes_move(gladiator, number):
 
 
 def gladiator_fight():
-    gladiator1 = gladiator1()
-    gladiator2 = gladiator2()
+    gladiator_1 = gladiator1()
+    gladiator_2 = gladiator2()
     while True:
-        show_gladiators(gladiator1, gladiator2)
-        gladiator1_move = gladiator_makes_move(gladiator1, 1)
+        show_gladiators(gladiator_1, gladiator_2)
+        gladiator1_move = gladiator_makes_move(gladiator_1, 1)
         if gladiator1_move == 'attack':
-            core.attack(gladiator1, gladiator2)
+            core.attack(gladiator_1, gladiator_2)
         elif gladiator1_move == 'heal':
-            if gladiator1[rage] < 10:
+            if gladiator_1['rage'] < 10:
                 print("You try to heal, but you just aren't angry enough")
                 continue
-            elif gladiator1[health] == 100:
+            if gladiator_1['health'] == 100:
                 print(
                     "You spend some time searching for wounds to self-treat, but no serious one's are found (Turn used up)"
                 )
-                continue
             else:
-                core.heal(gladiator1)
-        elif gladiator1_move == 'quit':
-            break
-        elif gladiator1_move == 'pass':
-            pass
-        if core.is_dead(gladiator2):
-            print('Gladiator 2 has died. Funeral procession tommorrow')
-            break
-        show_gladiators(gladiator1, gladiator2)
-        gladiator2_move = gladiator_makes_move(gladiator2, 2)
-        if gladiator2_move == 'attack':
-            core.attack(gladiator2, gladiator1)
-        elif gladiator2_move == 'heal':
-            if gladiator2[rage] < 10:
-                print("You try to heal, but you just aren't angry enough")
-                continue
-            elif gladiator1[health] == 100:
-                print(
-                    "You spend some time searching for wounds to self-treat, but no serious one's are found (Turn used up)"
-                )
-                continue
-            else:
-                core.heal(gladiator1)
+                core.heal(gladiator_1)
         elif gladiator1_move == 'quit':
             print('Gladiator 1: Survived!\nGladiator 2: Survived!')
             break
         elif gladiator1_move == 'pass':
             pass
-        if core.is_dead(gladiator1):
+        if core.is_dead(gladiator_2):
+            print('Gladiator 2 has died. Funeral procession tommorrow')
+            break
+        show_gladiators(gladiator_1, gladiator_2)
+        gladiator2_move = gladiator_makes_move(gladiator_2, 2)
+        if gladiator2_move == 'attack':
+            core.attack(gladiator_2, gladiator_1)
+        elif gladiator2_move == 'heal':
+            if gladiator_2['rage'] < 10:
+                print("You try to heal, but you just aren't angry enough")
+                continue
+            elif gladiator_1['health'] == 100:
+                print(
+                    "You spend some time searching for wounds to self-treat, but no serious one's are found (Turn used up)"
+                )
+                continue
+            else:
+                core.heal(gladiator_1)
+        elif gladiator1_move == 'quit':
+            print('Gladiator 1: Survived!\nGladiator 2: Survived!')
+            break
+        elif gladiator1_move == 'pass':
+            pass
+        if core.is_dead(gladiator_1):
             print('Gladiator 2 has died. Funeral procession tommorrow')
             break
 
