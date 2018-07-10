@@ -19,17 +19,17 @@ def attack(attacker, defender):
         print('{} critical hit {} for {} damage!'.format(
             attacker['gladiator_name'], defender['gladiator_name'],
             damage_dealt))
-    if defender['health'] < damage_dealt:
-        print('{} has been fatally wounded by {} for {} damage'.format(
-            defender['gladiator_name'], attacker['gladiator_name'],
-            damage_dealt))
-        defender['health'] = 0
+        defender['health'] -= damage_dealt
     else:
         defender['health'] = defender['health'] - damage_dealt
         defender['rage'] += 15
         print('{} hit {} for {} damage'.format(attacker['gladiator_name'],
                                                defender['gladiator_name'],
                                                damage_dealt))
+    if defender['health'] < 0:
+        print('{} has been fatally wounded by {}'.format(
+            defender['gladiator_name'], attacker['gladiator_name']))
+        defender['health'] = 0
 
 
 def heal(gladiator):
