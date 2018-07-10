@@ -73,13 +73,13 @@ def gladiator_fight():
             if gladiator_2['rage'] < 10:
                 print("You try to heal, but you just aren't angry enough")
                 continue
-            elif gladiator_1['health'] == 100:
+            elif gladiator_2['health'] == 100:
                 print(
                     "You spend some time searching for wounds to self-treat, but no serious one's are found (Turn used up)"
                 )
                 continue
             else:
-                core.heal(gladiator_1)
+                core.heal(gladiator_2)
         elif gladiator1_move == 'quit':
             print('Gladiator 1: Survived!\nGladiator 2: Survived!')
             break
