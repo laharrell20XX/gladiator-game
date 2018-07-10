@@ -31,6 +31,10 @@ def gladiator_makes_move(gladiator_name):
             return move
         elif 'heal' == move:
             return move
+        #elif 'supah kick' == move:  Used to test death condititon
+        #    return move
+        #elif 'angery' == move:  Used to test critical hits
+        #    return move
         else:
             print('Invalid input')
 
@@ -46,6 +50,11 @@ def gladiator_fight():
         gladiator1_move = gladiator_makes_move(attacker['gladiator_name'])
         if gladiator1_move == 'attack':
             core.attack(attacker, defender)
+        #elif gladiator1_move == 'supah kick':
+        #    defender['health'] -= 99
+        #elif gladiator1_move == 'angery':
+        #    attacker['rage'] += 100
+        #    continue
         elif gladiator1_move == 'heal':
             if attacker['rage'] < 10:
                 print("You try to heal, but you just aren't angry enough")
