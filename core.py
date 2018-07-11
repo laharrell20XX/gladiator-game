@@ -2,14 +2,16 @@ from random import randrange, randint
 
 
 def new_gladiator(gladiator_name, health, rage, damage_low, damage_high,
-                  defending):
+                  defending, defense, stunned_turns):
     return dict(
         gladiator_name=gladiator_name,
         health=health,
         rage=rage,
         damage_low=damage_low,
         damage_high=damage_high,
-        defending=defending)
+        defending=defending,
+        defense=defense,
+        stunned_turns=stunned_turns)
 
 
 def attack(attacker, defender):
@@ -36,9 +38,9 @@ def attack(attacker, defender):
             attacker['rage'] = 0
         else:
             attacker['rage'] += 15
-        print('{} hit {} for {} damage'.format(attacker['gladiator_name'],
-                                               defender['gladiator_name'],
-                                               damage_dealt))
+            print('{} hit {} for {} damage'.format(attacker['gladiator_name'],
+                                                   defender['gladiator_name'],
+                                                   damage_dealt))
         defender['health'] -= damage_dealt
 
     if defender['health'] < 0:
@@ -47,21 +49,36 @@ def attack(attacker, defender):
         defender['health'] = 0
 
 
-def defend(attacker,
+def defend(defender,
            damage_dealt):  #should reduce the damage of the next hit by 50%
-    damage_dealt = damage_dealt * .50
+    damage_dealt = damage_dealt - (damage_dealt * defender['defense'] / 4)
     return damage_dealt
 
 
+def defend_counter(defender):
+    if defender['defending']:  #checks if gladiator is defending
+        if defender['defense'] - 1 < 0:  #gladiator no longer defends if their defense is below 0
+            defender['defending'] = False
+        else:
+            gladiator[
+                'defense'] -= 1  #for every turn a gladiator defends, their defense goes down by 1
+    else:  #checks if gladiator is not defending
+        if defender['defense'] - 1 < 0 and not defender['stunned_turns']:
+            defender['stunned_turns'] = 3
+            defender[
+                'defense'] = 3  #if gladiator is no longer stunned, defense regenerates
+
+
 def heal(gladiator):
-    if (gladiator['health'] + 5) > 100 and gladiator['health'] < 100:
+    if gladiator['health'] + 5 > 100:
+        gladiator['health'] = min((gladiator['health'] + 5), 100)
         gladiator['rage'] -= 10
-        gladiator['health'] = 100
-    elif (gladiator['health'] + 5) <= 100:
+        gladiator['defense'] = 3
+        #when gladiator is healed, their defense is refilled
+    else:
         gladiator['rage'] -= 10
         gladiator['health'] += 5
-    else:
-        pass
+        gladiator['defense'] = 3
 
 
 def is_dead(gladiator):
