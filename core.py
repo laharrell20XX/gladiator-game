@@ -2,7 +2,7 @@ from random import randrange, randint
 
 
 def new_gladiator(gladiator_name, health, rage, damage_low, damage_high,
-                  defending, defense, stunned_turns):
+                  defending, defense, stunned_turns, stunned_status):
     return dict(
         gladiator_name=gladiator_name,
         health=health,
@@ -11,7 +11,8 @@ def new_gladiator(gladiator_name, health, rage, damage_low, damage_high,
         damage_high=damage_high,
         defending=defending,
         defense=defense,
-        stunned_turns=stunned_turns)
+        stunned_turns=stunned_turns,
+        stunned_status='')
 
 
 def attack(attacker, defender):
@@ -20,8 +21,9 @@ def attack(attacker, defender):
     if crit_chance < attacker['rage']:  #the higher the rage, the bigger chance for a critical hit
         damage_dealt = damage_dealt * 2
         attacker['rage'] = 0
-        if defender['defending']:
+        if defender['defending'] and defender['defense']:
             damage_dealt = defend(defender, damage_dealt)
+            defender['defense'] -= 2
             print(
                 'Critical hit successfully blocked! {} only received {} damage'.
                 format(defender['gladiator_name'], damage_dealt))
@@ -31,7 +33,7 @@ def attack(attacker, defender):
                 damage_dealt))
         defender['health'] -= damage_dealt
     else:
-        if defender['defending']:
+        if defender['defending'] and defender['defense']:
             damage_dealt = defend(defender, damage_dealt)
             print('Hit was blocked! {} only received {} damage'.format(
                 defender['gladiator_name'], damage_dealt))
@@ -51,20 +53,26 @@ def attack(attacker, defender):
 
 def defend(defender,
            damage_dealt):  #should reduce the damage of the next hit by 50%
-    damage_dealt = damage_dealt - (damage_dealt * defender['defense'] / 4)
+    damage_dealt = damage_dealt * defender['defense'] / 4
     return damage_dealt
 
 
 def defend_counter(defender):
     if defender['defending']:  #checks if gladiator is defending
-        if defender['defense'] - 1 < 0:  #gladiator no longer defends if their defense is below 0
-            defender['defending'] = False
+        if defender['defense'] - 1 < 0:
+            defender['stunned_status'] = '(stunned)'
+            print(
+                'Your excessive defending has exhausted your strength {}.  Now you are stunned for 2 turns'.
+                format(defender['gladiator_name']))
+            defender[
+                'defending'] = ''  #gladiator no longer defends if their defense is below 0
         else:
-            gladiator[
+            defender[
                 'defense'] -= 1  #for every turn a gladiator defends, their defense goes down by 1
     else:  #checks if gladiator is not defending
         if defender['defense'] - 1 < 0 and not defender['stunned_turns']:
-            defender['stunned_turns'] = 3
+            defender['stunned_turns'] = 2
+            defender['stunned_status'] = ''
             defender[
                 'defense'] = 3  #if gladiator is no longer stunned, defense regenerates
 
