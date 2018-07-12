@@ -32,7 +32,8 @@ def choose_weapon(weapons):
         weapon_choice = input('\nGladiator, choose your weapon...')
         for weapon in weapons:
             if weapon['weapon_name'] == weapon_choice:
-                return weapon_choice
+                print('{} selected'.format(weapon['weapon_name']))
+                return weapon
         print('That weapon is currently not in stock')
 
 
@@ -135,8 +136,8 @@ def gladiator_fight():  #add defend counter
     gladiator_1_weapon = choose_weapon(available_weapons)
     gladiator_1 = gladiator(gladiator_1_name, gladiator_1_weapon)
     gladiator_2_name = greeting('Player 2')
-    gladiator_2_weapon = choose_weapon(available)
-    gladiator_2 = (gladiator_2_name, gladiator_2_weapon)
+    gladiator_2_weapon = choose_weapon(available_weapons)
+    gladiator_2 = gladiator(gladiator_2_name, gladiator_2_weapon)
     attacker, defender = gladiator_1, gladiator_2
     available_weapons = weapon_inventory()
     gladiator_turn(attacker, defender)
