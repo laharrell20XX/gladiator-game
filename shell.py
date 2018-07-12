@@ -2,16 +2,50 @@ import core
 from random import randint, choice
 
 
-def gladiator(gladiator_name):
-    gladiator = core.new_gladiator(gladiator_name, 100, 0, randint(0, 5),
-                                   randint(6, 15), '', 3, 2, '')
+def gladiator(gladiator_name, weapon):
+    gladiator = core.new_gladiator(gladiator_name, 100, 0,
+                                   weapon['damage_low'], weapon['damage_high'],
+                                   '', 3, 2, '', 15, weapon['weapon_name'])
     return gladiator
+
+
+def weapon_inventory():
+    sword = core.weapon('sword', 4, 15, 20)
+    bow_staff = core.weapon('bo staff', 2, 11, 10)
+    war_hammer = core.weapon('war_hammer', 3, 18, 30)
+    mace = core.weapon('mace', 3, 14, 15)
+    bat = core.weapon('bat', 2, 13, 13)
+    return sword, bow_staff, war_hammer, mace, bat
+
+
+def show_weapons(weapons):
+    for weapon in weapons:
+        print(
+            '\n{}: lowest damage {}, highest damage {}, miss chance {}'.format(
+                weapon['weapon_name'].capitalize(), weapon['damage_low'],
+                weapon['damage_high'], weapon['miss_chance']))
+
+
+def choose_weapon(weapons):
+    while True:
+        show_weapons(weapons)
+        weapon_choice = input('\nGladiator, choose your weapon...')
+        for weapon in weapons:
+            if weapon['weapon_name'] == weapon_choice:
+                return weapon_choice
+        print('That weapon is currently not in stock')
+
+
+def greeting(player):
+    gladiator_name = input('Greetings {}, what is your name?'.format(player))
+    return gladiator_name
 
 
 def show_gladiators(gladiator_1, gladiator_2):
     print('''
-{}: {} HP ||| {} Rage {} shield durability {} {}
-{}: {} HP ||| {} Rage {} shield durability {} {}'''.format(
+{}: {} HP ||| {} Rage ||| {} shield durability {} {}
+
+{}: {} HP ||| {} Rage ||| {} shield durability {} {}'''.format(
         gladiator_1['gladiator_name'],
         gladiator_1['health'], gladiator_1['rage'],
         max(gladiator_1['defense'], 0), gladiator_1['defending'],
@@ -24,25 +58,25 @@ def show_gladiators(gladiator_1, gladiator_2):
 def gladiator_makes_move(attacker, defender):
     while True:
         move = input('''{}... What would you like to do?
-- attack
-- pass
-- quit
-- heal
-- defend
->>> '''.format(attacker['gladiator_name']))
-        if 'attack' == move:
+- [a]ttack
+- [p]ass
+- [q]uit
+- [h]eal
+- [d]efend
+>>> '''.format(attacker['gladiator_name'])).lower()
+        if 'a' == move:
             attacker['defending'] = ''
             return move
-        elif 'pass' == move:
+        elif 'p' == move:
             return move
-        elif 'quit' == move:
+        elif 'q' == move:
             print('{}: Survived!\n{}: Survived!'.format(
                 defender['gladiator_name'], attacker['gladiator_name']))
             quit()
-        elif 'heal' == move:
+        elif 'h' == move:
             attacker['defending'] = ''
             return move
-        elif 'defend' == move:
+        elif 'd' == move:
             attacker['defending'] = 'blocking'
             return move
         elif 'supah kick' == move:  #Used to test death condititon
@@ -69,23 +103,23 @@ def gladiator_turn(attacker, defender):
         else:
             show_gladiators(attacker, defender)
             gladiator_move = gladiator_makes_move(attacker, defender)
-            if gladiator_move == 'attack':
+            if gladiator_move == 'a':
                 core.attack(attacker, defender)
             elif gladiator_move == 'supah kick':  #negative  health test
                 defender['health'] -= 99
             elif gladiator_move == 'angery':  #crit hit test
                 attacker['rage'] += 100
                 continue
-            elif gladiator_move == 'heal':
+            elif gladiator_move == 'h':
                 if attacker['rage'] < 10:
                     print("You try to heal, but you just aren't angry enough")
-                if attacker['health'] == 100:
+                elif attacker['health'] == 100:
                     print(
                         "You spend some time searching for wounds to self-treat, but no serious ones are found."
                     )
                 else:
                     core.heal(attacker)
-            elif gladiator_move == 'pass':
+            elif gladiator_move == 'p':
                 pass
             if core.is_dead(defender):
                 print('{} has died. Funeral procession tommorrow... {} Wins!'.
@@ -96,9 +130,15 @@ def gladiator_turn(attacker, defender):
 
 
 def gladiator_fight():  #add defend counter
-    gladiator_1 = gladiator(input('Player 1... What is your name?'))
-    gladiator_2 = gladiator(input('Player 2... What is your name?'))
+    available_weapons = weapon_inventory()
+    gladiator_1_name = greeting('Player 1')
+    gladiator_1_weapon = choose_weapon(available_weapons)
+    gladiator_1 = gladiator(gladiator_1_name, gladiator_1_weapon)
+    gladiator_2_name = greeting('Player 2')
+    gladiator_2_weapon = choose_weapon(available)
+    gladiator_2 = (gladiator_2_name, gladiator_2_weapon)
     attacker, defender = gladiator_1, gladiator_2
+    available_weapons = weapon_inventory()
     gladiator_turn(attacker, defender)
 
 
