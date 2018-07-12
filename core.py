@@ -1,9 +1,8 @@
 from random import randrange, randint
 
 
-def new_gladiator(gladiator_name, health, rage, damage_low, damage_high,
-                  defending, defense, stunned_turns, stunned_status,
-                  miss_chance):
+def new_gladiator(gladiator_name, health, rage, defending, defense,
+                  stunned_turns, stunned_status, miss_chance, weapon):
     return dict(
         gladiator_name=gladiator_name,
         health=health,
@@ -14,6 +13,15 @@ def new_gladiator(gladiator_name, health, rage, damage_low, damage_high,
         defense=defense,
         stunned_turns=stunned_turns,
         stunned_status='',
+        miss_chance=miss_chance,
+        weapon=weapon)
+
+
+def weapon(weapon_name, damage_low, damage_high, miss_chance):
+    return dict(
+        weapon_name=weapon_name,
+        damage_high=damage_high,
+        damage_low=damage_low,
         miss_chance=miss_chance)
 
 
