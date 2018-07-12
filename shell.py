@@ -12,11 +12,13 @@ def show_gladiators(gladiator_1, gladiator_2):
     print('''
 {}: {} HP ||| {} Rage {} shield durability {} {}
 {}: {} HP ||| {} Rage {} shield durability {} {}'''.format(
-        gladiator_1['gladiator_name'], gladiator_1['health'],
-        gladiator_1['rage'], gladiator_1['defense'], gladiator_1['defending'],
+        gladiator_1['gladiator_name'],
+        gladiator_1['health'], gladiator_1['rage'],
+        max(gladiator_1['defense'], 0), gladiator_1['defending'],
         gladiator_1['stunned_status'], gladiator_2['gladiator_name'],
-        gladiator_2['health'], gladiator_2['rage'], gladiator_2['defense'],
-        gladiator_2['defending'], gladiator_2['stunned_status']))
+        gladiator_2['health'], gladiator_2['rage'],
+        max(gladiator_2['defense'],
+            0), gladiator_2['defending'], gladiator_2['stunned_status']))
 
 
 def gladiator_makes_move(attacker, defender):
@@ -53,6 +55,7 @@ def gladiator_makes_move(attacker, defender):
 
 def gladiator_turn(attacker, defender):
     while True:
+        core.defend_counter(attacker)
         if attacker['stunned_status']:
             if attacker['stunned_turns'] == 0:
                 show_gladiators(attacker, defender)
@@ -65,7 +68,6 @@ def gladiator_turn(attacker, defender):
                 pass
         else:
             show_gladiators(attacker, defender)
-            core.defend_counter(defender)
             gladiator_move = gladiator_makes_move(attacker, defender)
             if gladiator_move == 'attack':
                 core.attack(attacker, defender)
