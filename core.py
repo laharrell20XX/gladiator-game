@@ -21,30 +21,42 @@ def attack(attacker, defender):
     if crit_chance < attacker['rage']:  #the higher the rage, the bigger chance for a critical hit
         damage_dealt = damage_dealt * 2
         attacker['rage'] = 0
-        if defender['defending'] and defender['defense']:
-            damage_dealt = defend(defender, damage_dealt)
+        if defender['defending']:
+            if defender['defense'] > 0:  # if defense is high enough to block a crit hit
+                damage_dealt = defend(defender, damage_dealt)
+                print(
+                    'Critical hit successfully blocked! {} only received {} damage'.
+                    format(defender['gladiator_name'], damage_dealt))
+            else:  #if defense is not high enough to block a crit hit
+                print('{} critically hit {} for {} damage!'.format(
+                    attacker['gladiator_name'], defender['gladiator_name'],
+                    damage_dealt))
             defender['defense'] -= 2
-            print(
-                'Critical hit successfully blocked! {} only received {} damage'.
-                format(defender['gladiator_name'], damage_dealt))
         else:
             print('{} critically hit {} for {} damage!'.format(
                 attacker['gladiator_name'], defender['gladiator_name'],
                 damage_dealt))
-        defender['health'] -= damage_dealt
-    else:
-        if defender['defending'] and defender['defense']:
-            damage_dealt = defend(defender, damage_dealt)
-            print('Hit was blocked! {} only received {} damage'.format(
-                defender['gladiator_name'], damage_dealt))
-            attacker['rage'] = 0
+    else:  #normal hit condition
+        if defender['defending']:
+            if defender['defense'] > 0:  # if defense is high enough to block a normal attack
+                damage_dealt = defend(defender, damage_dealt)
+                print('Hit was blocked! {} only received {} damage'.format(
+                    defender['gladiator_name'], damage_dealt))
+                attacker['rage'] = 0
+            else:  # if defense is not high enough to block a normal attack
+                attacker['rage'] += 15
+                print('{} hit {} for {} damage'.format(
+                    attacker['gladiator_name'], defender['gladiator_name'],
+                    damage_dealt))
+            defender[
+                'defense'] -= 1  #defense is always decreased if glad is defending
         else:
             attacker['rage'] += 15
             print('{} hit {} for {} damage'.format(attacker['gladiator_name'],
                                                    defender['gladiator_name'],
                                                    damage_dealt))
-        defender['health'] -= damage_dealt
 
+    defender['health'] -= damage_dealt
     if defender['health'] < 0:
         print('{} has been fatally wounded by {}'.format(
             defender['gladiator_name'], attacker['gladiator_name']))
@@ -53,28 +65,24 @@ def attack(attacker, defender):
 
 def defend(defender,
            damage_dealt):  #should reduce the damage of the next hit by 50%
-    damage_dealt = damage_dealt * defender['defense'] / 4
+    damage_dealt = damage_dealt - (damage_dealt * defender['defense'] / 4)
     return damage_dealt
 
 
 def defend_counter(defender):
     if defender['defending']:  #checks if gladiator is defending
-        if defender['defense'] - 1 < 0:
+        if defender['defense'] < 0:
             defender['stunned_status'] = '(stunned)'
             print(
-                'Your excessive defending has exhausted your strength {}.  Now you are stunned for 2 turns'.
+                'Your shield has been broken {}.  Now you are stunned for 2 turns'.
                 format(defender['gladiator_name']))
             defender[
                 'defending'] = ''  #gladiator no longer defends if their defense is below 0
-        else:
-            defender[
-                'defense'] -= 1  #for every turn a gladiator defends, their defense goes down by 1
     else:  #checks if gladiator is not defending
-        if defender['defense'] - 1 < 0 and not defender['stunned_turns']:
+        if defender['defense'] < 0 and not defender['stunned_turns']:
             defender['stunned_turns'] = 2
             defender['stunned_status'] = ''
-            defender[
-                'defense'] = 3  #if gladiator is no longer stunned, defense regenerates
+            defender['defense'] = 0
 
 
 def heal(gladiator):
